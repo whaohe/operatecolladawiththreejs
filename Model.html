@@ -14,6 +14,7 @@
 <script src="js/OrbitControls.js"></script>
 <script src="js/ColladaLoader.js"></script>
 
+<script type='text/javascript' src='js/dat.gui.min.js'></script>
 <!-- jQuery code to display an information button and box when clicked. -->
 <script src="js/jquery-1.9.1.js"></script>
 <script src="js/jquery-ui.js"></script>
@@ -144,7 +145,29 @@ function init()
 	renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
     window.addEventListener( 'resize', onWindowResize, false );
-	
+
+	//Add gui
+	var gui = new dat.GUI();
+	var params = {
+		geoNum: 0,
+		times:300,
+		btn:function() { alert("Hello!") },
+		shapemethod:0,
+		hidebtn:function() { alert("Hide it!") },
+	};
+	var SeleGeo = gui.addFolder('选择中心几何体');
+	var geoNumdict = {};
+	for (var step = 0; step < 83; step++) {
+		geoNumdict["第"+(1+step)+'个几何体'] = step;
+	}
+	SeleGeo.add(params, 'times' ).name('倍数');
+	SeleGeo.add(params, 'geoNum', geoNumdict).name('选择中心几何体');
+	SeleGeo.add(params, 'shapemethod', {'高斯变形':0,'正交变形':1,'正交临近变形':2,'整体变形':3,'临近变形':4}).name('输入倍数');
+	SeleGeo.add(params,'btn').name('变形');
+	SeleGeo.add(params,'hidebtn').name('隐藏原集合体');
+	//SeleGeo.close();
+    SeleGeo.open();
+	gui.open();
 }
 
 function onWindowResize() {
@@ -242,7 +265,6 @@ function onDocumentMouseMove( event ) {
     } else {
 
         if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-
         INTERSECTED = null;
 		highlightBox.visible = false;
         container.style.cursor = 'auto';
